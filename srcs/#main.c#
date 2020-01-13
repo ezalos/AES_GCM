@@ -1,0 +1,51 @@
+#include <stdio.h>
+#include <gcrypt.h>
+#define NEED_LIBGCRYPT_VERSION "1.0.0"
+
+int		setup(void)
+{
+	char		*req_version;
+	const char	*v_return;
+
+	v_return = gcry_check_version(req_version);
+	printf("NEED_LIBGCRYPT_VERSION : %s\n", NEED_LIBGCRYPT_VERSION);
+
+	/* check should be the very first call because it
+	makes sure that important subsystems are initialized.
+	#define NEED_LIBGCRYPT_VERSION to the minimum required version. */
+	if (!(v_return = gcry_check_version (NEED_LIBGCRYPT_VERSION)))
+	{
+		fprintf (stderr, "libgcrypt is too old (need %s, have %s)\n",
+		NEED_LIBGCRYPT_VERSION, gcry_check_version (NULL));
+		exit (2);
+	}
+	printf("v_return : %s\n", v_return);
+	/* Disable secure memory. */
+	gcry_control (GCRYCTL_DISABLE_SECMEM, 0);
+	/* ... If required, other initialization goes here. */
+	/* Tell Libgcrypt that initialization has completed. */
+	gcry_control (GCRYCTL_INITIALIZATION_FINISHED, 0);
+}
+
+void	*my_cypher(void)
+{
+	// GCRY_CIPHER_AES128
+
+	// GCRY_CIPHER_MODE_GCM
+	// 	Galois/Counter Mode (GCM) is an Authenticated Encryption with Associated
+	// 	Data (AEAD) block cipher mode, which is specified in ’NIST Special Publication 800-38D’
+
+// 	gcry_error_t gcry_cipher_open (gcry_cipher_hd_t *hd, int algo, int [Function]
+// mode, unsigned int flags)
+	gcry_cipher_open (gcry_cipher_hd_t *hd, GCRY_CIPHER_AES128,
+		int [Function]GCRY_CIPHER_MODE_GCM, unsigned int flags);
+}
+
+int		main(int ac, char **av)
+{
+	if (ac != 2)
+		return (0);
+	setup();
+
+	return (0);
+}
